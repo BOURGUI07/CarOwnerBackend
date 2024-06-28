@@ -27,7 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder=true)
 public class Owner {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -27,14 +27,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder=true)
 public class Car {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private Integer id;
-    @Column(name="model")
-    private String model;
+    @Column(name="brand")
+    private String brand;
     @Column(name="color")
     private String color;
     @Column(name="registration")
