@@ -4,7 +4,6 @@
  */
 package main.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +15,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder(toBuilder=true)
 public class CarDTO {
     private Integer id;
     private String brand;
