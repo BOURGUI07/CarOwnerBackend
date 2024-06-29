@@ -68,7 +68,10 @@ public class CarService {
     
     @Transactional
     public void deleteCar(Integer id){
-        repo.deleteById(id);
+        var c = repo.findById(id).orElse(null);
+        if(c!=null){
+            repo.deleteById(id);
+        }
     }
     
     public List<Car> getCarsByBrand(String brand){

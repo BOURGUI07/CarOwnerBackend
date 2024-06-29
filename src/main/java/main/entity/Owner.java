@@ -4,6 +4,8 @@
  */
 package main.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +29,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Owner {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -38,6 +42,7 @@ public class Owner {
     @Column(name="lastname")
     private String lastName;
     
+    @JsonIgnore
     @OneToMany(cascade=CascadeType.ALL, mappedBy="owner")
-    private List<Car> cars;
+    private List<Car> cars = new ArrayList<>();
 }

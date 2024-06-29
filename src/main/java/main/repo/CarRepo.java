@@ -18,6 +18,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CarRepo extends JpaRepository<Car, Integer> {
     
-    @Query("SELECT c.id FROM car c WHERE c IN :cars")
+    @Query("SELECT c.id FROM Car c WHERE c IN :cars")
     public List<Integer> findIdsByCars(@Param("cars") List<Car> cars);
 }

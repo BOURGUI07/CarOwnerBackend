@@ -22,6 +22,9 @@ public class OwnerMapper {
         var o = new Owner();
         o.setFirstName(x.getFirstName());
         o.setLastName(x.getLastName());
+        if(x.getCarsIDs()!=null && !x.getCarsIDs().isEmpty()){
+            o.setCars(repo.findAllById(x.getCarsIDs()));
+        }
         o.setCars(repo.findAllById(x.getCarsIDs()));
         return o;
     }

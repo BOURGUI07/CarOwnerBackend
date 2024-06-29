@@ -4,6 +4,7 @@
  */
 package main.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,5 @@ public class OwnerDTO {
     private Integer id;
     private String firstName;
     private String lastName;
-    private List<Integer> carsIDs;
+    private List<Integer> carsIDs = new ArrayList<>();
 }

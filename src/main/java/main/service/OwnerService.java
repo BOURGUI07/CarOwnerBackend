@@ -48,7 +48,10 @@ public class OwnerService {
     
     @Transactional
     public void deleteOwner(Integer id){
-        repo.deleteById(id);
+        var o = repo.findById(id).orElse(null);
+        if(o!=null){
+            repo.deleteById(id);
+        } 
     }
     
     @Transactional
@@ -61,11 +64,16 @@ public class OwnerService {
     @Transactional
     public OwnerDTO updateOwner(Integer id, OwnerDTO x){
         var o = repo.findById(id).orElse(null);
-        o.setFirstName(x.getFirstName());
-        o.setLastName(x.getLastName());
-        o.setCars(carRepo.findAllById(x.getCarsIDs()));
-        var saved = repo.save(o);
-        return mapper.toDTO(saved);
+        if(o!=null){
+            o.setFirstName(x.getFirstName());
+            o.setLastName(x.getLastName());
+            if(!x.getCarsIDs().isEmpty()){
+                o.setCars(carRepo.findAllById(x.getCarsIDs()));
+            }
+            var saved = repo.save(o);
+            return mapper.toDTO(saved);
+        }
+        return null;
     }
     
     public Owner findOwnerByFirstName(String firstName){
