@@ -19,6 +19,8 @@ import main.mapper.CarMapper;
 import main.repo.CarRepo;
 import main.repo.OwnerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -46,12 +48,23 @@ public class CarService {
         this.validator = validator;
     }
     
+    @Cacheable(value="findCarById", key="#id")
     public CarDTO findCar(Integer id){
         var c = repo.findById(id).orElse(null);
         return mapper.toDTO(c);
     }
     
+    @Cacheable(value="allCars", key="#root.methodName")
+    public List<CarDTO> getAll(){
+        return repo.findAll().stream().map(x -> mapper.toDTO(x)).collect(Collectors.toList());
+    }
+    
+    @CacheEvict(value={"findCarById","allCars"}, allEntries=true)
+    public void clearCache(){
+    }
+    
     @Transactional
+    @CacheEvict(value={"findCarById","allCars"}, allEntries=true)
     public CarDTO createCar(CarDTO x){
         Set<ConstraintViolation<CarDTO>> violations = validator.validate(x);
         if (!violations.isEmpty()) {
@@ -59,10 +72,12 @@ public class CarService {
         }
         var car = mapper.toCar(x);
         var savedCar = repo.save(car);
+        clearCache();
         return mapper.toDTO(savedCar);
     }
     
     @Transactional
+    @CacheEvict(value={"findCarById","allCars"}, allEntries=true)
     public CarDTO updateCar(Integer id, CarDTO x){
         Set<ConstraintViolation<CarDTO>> violations = validator.validate(x);
         if (!violations.isEmpty()) {
@@ -78,19 +93,19 @@ public class CarService {
             car.setOwner(repo1.findById(x.getOwnerID()).orElse(null));
         } 
         var savedCar = repo.save(car);
+        clearCache();
         return mapper.toDTO(savedCar);
     }
     
-    public List<CarDTO> getAll(){
-        return repo.findAll().stream().map(x -> mapper.toDTO(x)).collect(Collectors.toList());
-    }
     
     @Transactional
+    @CacheEvict(value={"findCarById","allCars"}, allEntries=true)
     public void deleteCar(Integer id){
         var c = repo.findById(id).orElse(null);
         if(c!=null){
             repo.deleteById(id);
         }
+        clearCache();
     }
     
     public List<Car> getCarsByBrand(String brand){

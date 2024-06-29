@@ -97,4 +97,5 @@ public class CarController {
     public List<Object[]> carsCountByColor(){
         return service.carsCountByColor();
     }
+   
 }

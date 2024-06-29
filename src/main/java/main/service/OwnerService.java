@@ -21,6 +21,8 @@ import main.mapper.OwnerMapper;
 import main.repo.CarRepo;
 import main.repo.OwnerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -46,24 +48,33 @@ public class OwnerService {
     private CarRepo carRepo;
     private Validator validator;
     
+    @Cacheable(value="allOwners", key="#root.methodName")
     public List<OwnerDTO> getAll(){
         return repo.findAll().stream().map(o -> mapper.toDTO(o)).collect(Collectors.toList());
     }
     
+    @Cacheable(value="findOwnerById", key="#id")
     public OwnerDTO findOwner(Integer id){
         var o = repo.findById(id).orElse(null);
         return mapper.toDTO(o);
     }
     
+    @CacheEvict(value={"findOwnerById","allOwners"}, allEntries=true)
+    public void clearCache(){
+    }
+    
     @Transactional
+    @CacheEvict(value={"findOwnerById","allOwners"}, allEntries=true)
     public void deleteOwner(Integer id){
         var o = repo.findById(id).orElse(null);
         if(o!=null){
             repo.deleteById(id);
-        } 
+        }
+        clearCache();
     }
     
     @Transactional
+    @CacheEvict(value={"findOwnerById","allOwners"}, allEntries=true)
     public OwnerDTO createOwner(OwnerDTO x){
         Set<ConstraintViolation<OwnerDTO>> violations = validator.validate(x);
         if (!violations.isEmpty()) {
@@ -71,10 +82,12 @@ public class OwnerService {
         }
         var o = mapper.toOwner(x);
         var savedOwner = repo.save(o);
+        clearCache();
         return mapper.toDTO(savedOwner);
     }
     
     @Transactional
+    @CacheEvict(value={"findOwnerById","allOwners"}, allEntries=true)
     public OwnerDTO updateOwner(Integer id, OwnerDTO x){
         Set<ConstraintViolation<OwnerDTO>> violations = validator.validate(x);
         if (!violations.isEmpty()) {
@@ -88,6 +101,7 @@ public class OwnerService {
                 o.setCars(carRepo.findAllById(x.getCarsIDs()));
             }
             var saved = repo.save(o);
+            clearCache();
             return mapper.toDTO(saved);
         }
         return null;
