@@ -4,6 +4,7 @@
  */
 package main.rest;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import main.dto.OwnerDTO;
 import main.entity.Owner;
@@ -34,12 +35,12 @@ public class OwnerController {
     private OwnerService service;
     
     @PostMapping("/owners")
-    public OwnerDTO createOwner(@RequestBody OwnerDTO x){
+    public OwnerDTO createOwner(@Valid @RequestBody OwnerDTO x){
         return service.createOwner(x);
     }
     
     @PutMapping("/owners/{id}")
-    public OwnerDTO updateOwner(@PathVariable Integer id, @RequestBody OwnerDTO x){
+    public OwnerDTO updateOwner(@PathVariable Integer id,@Valid @RequestBody OwnerDTO x){
         if(id<0){
             throw new RessourceNotFoundException("No Owner Found for id: " + id);
         }

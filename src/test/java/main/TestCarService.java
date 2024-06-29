@@ -4,6 +4,9 @@
  */
 package main;
 
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import java.util.Arrays;
 import java.util.Optional;
 import main.dto.CarDTO;
@@ -41,6 +44,7 @@ public class TestCarService {
     private CarService service;
     private Car c = new Car();
     private CarDTO x = new CarDTO();
+    private Validator validator;
     
     public TestCarService() {
         c.setId(1);
@@ -63,6 +67,8 @@ public class TestCarService {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
+        service.setValidator(validator);
     }
     
     @Test
@@ -103,6 +109,15 @@ public class TestCarService {
         when(repo.findById(1)).thenReturn(Optional.of(c));
         service.deleteCar(1);
         verify(repo,times(1)).deleteById(1);
+    }
+    
+    @Test
+    void testOwnerName(){
+        var car = new CarDTO();
+        car.setBrand("");
+        assertThrows(ConstraintViolationException.class, () -> {
+            service.createCar(car);
+        });
     }
 
     // TODO add test methods here.

@@ -4,6 +4,7 @@
  */
 package main.rest;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import main.dto.CarDTO;
 import main.entity.Car;
@@ -47,12 +48,12 @@ public class CarController {
     }
     
     @PostMapping("/cars")
-    public CarDTO createCar(@RequestBody CarDTO x){
+    public CarDTO createCar(@Valid @RequestBody CarDTO x){
         return service.createCar(x);
     }
     
     @PutMapping("/cars/{id}")
-    public CarDTO updateCar(@PathVariable Integer id, @RequestBody CarDTO x){
+    public CarDTO updateCar(@PathVariable Integer id,@Valid @RequestBody CarDTO x){
         if(id<0){
             throw new RessourceNotFoundException("No Car Found for id: " + id);
         }

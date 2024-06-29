@@ -4,6 +4,8 @@
  */
 package main.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +19,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CarDTO {
     private Integer id;
+    @NotBlank(message="Brand Name is Mandatory")
+    @Size(min=2, max=50, message="Brand Name Must be At least 2 characters and doesn't exceed 50")
     private String brand;
     private String color;
     private String registrationNumber;

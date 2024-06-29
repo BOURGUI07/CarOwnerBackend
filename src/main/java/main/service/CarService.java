@@ -7,7 +7,11 @@ package main.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import main.dto.CarDTO;
 import main.entity.Car;
@@ -36,6 +40,11 @@ public class CarService {
     private CarRepo repo;
     private CarMapper mapper;
     private OwnerRepo repo1;
+    private Validator validator;
+
+    public void setValidator(Validator validator) {
+        this.validator = validator;
+    }
     
     public CarDTO findCar(Integer id){
         var c = repo.findById(id).orElse(null);
@@ -44,6 +53,10 @@ public class CarService {
     
     @Transactional
     public CarDTO createCar(CarDTO x){
+        Set<ConstraintViolation<CarDTO>> violations = validator.validate(x);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
         var car = mapper.toCar(x);
         var savedCar = repo.save(car);
         return mapper.toDTO(savedCar);
@@ -51,6 +64,10 @@ public class CarService {
     
     @Transactional
     public CarDTO updateCar(Integer id, CarDTO x){
+        Set<ConstraintViolation<CarDTO>> violations = validator.validate(x);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
         var car = repo.findById(id).orElse(null);
         car.setBrand(x.getBrand());
         car.setColor(x.getColor());

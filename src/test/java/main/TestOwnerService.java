@@ -4,6 +4,9 @@
  */
 package main;
 
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import java.util.Arrays;
 import java.util.Optional;
 import main.dto.OwnerDTO;
@@ -42,6 +45,7 @@ public class TestOwnerService {
     private OwnerService service;
     private Owner o = new Owner();
     private OwnerDTO x = new OwnerDTO();
+    private Validator validator;
     
     public TestOwnerService() {
         o.setId(1);
@@ -57,6 +61,8 @@ public class TestOwnerService {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
+        service.setValidator(validator);
     }
     
     @Test
@@ -98,6 +104,15 @@ public class TestOwnerService {
         when(repo.findById(1)).thenReturn(Optional.of(o));
         service.deleteOwner(1);
         verify(repo,times(1)).deleteById(1);
+    }
+    
+    @Test
+    void testOwnerName(){
+        var owner = new OwnerDTO();
+        owner.setFirstName("");
+        assertThrows(ConstraintViolationException.class, () -> {
+            service.createOwner(owner);
+        });
     }
 
     // TODO add test methods here.

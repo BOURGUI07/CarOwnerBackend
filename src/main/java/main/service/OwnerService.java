@@ -9,7 +9,11 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import main.dto.OwnerDTO;
 import main.entity.Owner;
@@ -25,6 +29,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class OwnerService {
+
+    public void setValidator(Validator validator) {
+        this.validator = validator;
+    }
     @Autowired
     public OwnerService(OwnerMapper mapper, OwnerRepo repo, CarRepo carRepo) {
         this.mapper = mapper;
@@ -36,6 +44,7 @@ public class OwnerService {
     private OwnerMapper mapper;
     private OwnerRepo repo;
     private CarRepo carRepo;
+    private Validator validator;
     
     public List<OwnerDTO> getAll(){
         return repo.findAll().stream().map(o -> mapper.toDTO(o)).collect(Collectors.toList());
@@ -56,6 +65,10 @@ public class OwnerService {
     
     @Transactional
     public OwnerDTO createOwner(OwnerDTO x){
+        Set<ConstraintViolation<OwnerDTO>> violations = validator.validate(x);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
         var o = mapper.toOwner(x);
         var savedOwner = repo.save(o);
         return mapper.toDTO(savedOwner);
@@ -63,6 +76,10 @@ public class OwnerService {
     
     @Transactional
     public OwnerDTO updateOwner(Integer id, OwnerDTO x){
+        Set<ConstraintViolation<OwnerDTO>> violations = validator.validate(x);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
         var o = repo.findById(id).orElse(null);
         if(o!=null){
             o.setFirstName(x.getFirstName());
