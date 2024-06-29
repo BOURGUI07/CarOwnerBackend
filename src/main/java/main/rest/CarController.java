@@ -6,6 +6,7 @@ package main.rest;
 
 import java.util.List;
 import main.dto.CarDTO;
+import main.entity.Car;
 import main.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -53,5 +55,30 @@ public class CarController {
     @DeleteMapping("/cars/{id}")
     public void deleteCar(@PathVariable Integer id){
         service.deleteCar(id);
+    }
+    
+    @GetMapping("/cars/findByBrand")
+    public List<Car> findCarsByBrand(@RequestParam String brand){
+        return service.getCarsByBrand(brand);
+    }
+    
+    @GetMapping("/cars/findByColor")
+    public List<Car> findCarsByColor(@RequestParam String color){
+        return service.getCarsByColor(color);
+    }
+    
+    @GetMapping("/cars/findByYear")
+    public List<Car> findCarsByYear(@RequestParam int year){
+        return service.getCarsByYear(year);
+    }
+    
+    @GetMapping("/cars/findByColorOrBrand")
+    public List<Car> findCarsByColorOrBrand(@RequestParam String color, @RequestParam String brand){
+        return service.getCarsByColorOrBrand(color, brand);
+    }
+    
+    @GetMapping("/cars/findByBrandSortByYear")
+    public List<Car> findCarsByBrandSortyear(@RequestParam String brand){
+        return service.getCarsByBrandSortByYear(brand);
     }
 }

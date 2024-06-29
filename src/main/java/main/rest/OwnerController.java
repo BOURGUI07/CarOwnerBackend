@@ -6,6 +6,7 @@ package main.rest;
 
 import java.util.List;
 import main.dto.OwnerDTO;
+import main.entity.Owner;
 import main.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -53,5 +55,10 @@ public class OwnerController {
     @DeleteMapping("/owners/{id}")
     public void deleteOwner(@PathVariable Integer id){
         service.deleteOwner(id);
+    }
+    
+    @GetMapping("/owners/findByName")
+    public Owner findOwnerByName(@RequestParam String name){
+        return service.findOwnerByFirstName(name);
     }
 }
