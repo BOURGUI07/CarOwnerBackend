@@ -7,6 +7,7 @@ package main.rest;
 import java.util.List;
 import main.dto.OwnerDTO;
 import main.entity.Owner;
+import main.handler.RessourceNotFoundException;
 import main.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +40,9 @@ public class OwnerController {
     
     @PutMapping("/owners/{id}")
     public OwnerDTO updateOwner(@PathVariable Integer id, @RequestBody OwnerDTO x){
+        if(id<0){
+            throw new RessourceNotFoundException("No Owner Found for id: " + id);
+        }
         return service.updateOwner(id, x);
     }
     
@@ -49,11 +53,17 @@ public class OwnerController {
     
     @GetMapping("/owners/{id}")
     public OwnerDTO getOwner(@PathVariable Integer id){
+        if(id<0){
+            throw new RessourceNotFoundException("No Owner Found for id: " + id);
+        }
         return service.findOwner(id);
     }
     
     @DeleteMapping("/owners/{id}")
     public void deleteOwner(@PathVariable Integer id){
+        if(id<0){
+            throw new RessourceNotFoundException("No Owner Found for id: " + id);
+        }
         service.deleteOwner(id);
     }
     

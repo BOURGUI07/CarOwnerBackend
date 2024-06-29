@@ -7,6 +7,7 @@ package main.rest;
 import java.util.List;
 import main.dto.CarDTO;
 import main.entity.Car;
+import main.handler.RessourceNotFoundException;
 import main.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +40,9 @@ public class CarController {
     
     @GetMapping("/cars/{id}")
     public CarDTO getCar(@PathVariable Integer id){
+        if(id<0){
+            throw new RessourceNotFoundException("No Car Found for id: " + id);
+        }
         return service.findCar(id);
     }
     
@@ -49,11 +53,17 @@ public class CarController {
     
     @PutMapping("/cars/{id}")
     public CarDTO updateCar(@PathVariable Integer id, @RequestBody CarDTO x){
+        if(id<0){
+            throw new RessourceNotFoundException("No Car Found for id: " + id);
+        }
         return service.updateCar(id, x);
     }
     
     @DeleteMapping("/cars/{id}")
     public void deleteCar(@PathVariable Integer id){
+        if(id<0){
+            throw new RessourceNotFoundException("No Car Found for id: " + id);
+        }
         service.deleteCar(id);
     }
     
