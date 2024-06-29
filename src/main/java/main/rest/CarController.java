@@ -92,4 +92,9 @@ public class CarController {
     public List<Car> findCarsByBrandSortyear(@RequestParam String brand){
         return service.getCarsByBrandSortByYear(brand);
     }
+    
+    @GetMapping("/cars/countCarsEachColor")
+    public List<Object[]> carsCountByColor(){
+        return service.carsCountByColor();
+    }
 }

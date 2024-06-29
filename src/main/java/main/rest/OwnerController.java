@@ -72,4 +72,39 @@ public class OwnerController {
     public Owner findOwnerByName(@RequestParam String name){
         return service.findOwnerByFirstName(name);
     }
+    
+    @GetMapping("/owners/moreThanOneCar")
+    public List<Object[]> ownersWhoHaveMoreThanOneCar(){
+        return service.ownersWhoHaveMoreThanOneCar();
+    }
+    
+    @GetMapping("/owners/mostExpensiveByOwner")
+    public List<Object[]> mostExpensiveCarByOwner(){
+        return service.mostExpensiveCarByOwner();
+    }
+    
+    @GetMapping("/owners/avgPriceByOwner")
+    public List<Object[]> avgPriceByOwner(){
+        return service.avgPriceByOwner();
+    }
+    
+    @GetMapping("/owners/ownersOfBrand")
+    public List<Object[]> ownersOfBrand(@RequestParam String brand){
+        return service.ownersOfBrand(brand);
+    }
+    
+    @GetMapping("/owners/totalPriceEachOwner")
+    public List<Object[]> totalValueOfOwnerCars(){
+        return service.totalValueOfOwnerCars();
+    }
+    
+    @GetMapping("/owners/ownersOfYearLess")
+    public List<Object[]> ownersOfCarsLessThanYear(@RequestParam int year){
+        return service.ownersOfCarsLessThanYear(year);
+    }
+    
+    @GetMapping("/owners/withNoCar")
+    public List<Owner> ownersWithNoCars(){
+        return service.ownersWithNoCars();
+    }
 }

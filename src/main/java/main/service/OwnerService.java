@@ -103,4 +103,46 @@ public class OwnerService {
             return null;
         }
     }
+    
+    //Which owners have more than one car?
+    public List<Object[]> ownersWhoHaveMoreThanOneCar(){
+        var q = "SELECT o.id, o.firstame, o.lastName, COUNT(c.id) as num_cars FROM owner o JOIN car c ON(o.id=c.owner_id) GROUP BY o.id, o.firstame, o.lastName HAVING COUNT(c.id)>1 ORDER BY num_cars DESC";
+        return em.createNativeQuery(q).getResultList();
+    }
+    
+    //What is the most expensive car owned by each owner?
+    public List<Object[]> mostExpensiveCarByOwner(){
+        var q = "SELECT o.id, o.firstame, o.lastName, MAX(c.price) as max_price FROM owner o JOIN car c ON(o.id=c.owner_id) GROUP BY o.id, o.firstame, o.lastName ORDER BY max_price DESC";
+        return em.createNativeQuery(q).getResultList();
+    }
+    
+    //What is the average price of cars owned by each owner?
+    public List<Object[]> avgPriceByOwner(){
+        var q = "SELECT o.id, o.firstame, o.lastName, AVG(c.price) as avg_price FROM owner o JOIN car c ON(o.id=c.owner_id) GROUP BY o.id, o.firstame, o.lastName ORDER BY avg_price DESC";
+        return em.createNativeQuery(q).getResultList();
+    }
+    
+    //Which owners have cars of a specific brand
+    public List<Object[]> ownersOfBrand(String brand){
+        var q = "SELECT o.id, o.firstame, o.lastName FROM owner o JOIN car c ON(o.id=c.owner_id) WHERE c.brand= :brand";
+        return em.createNativeQuery(q).setParameter("brand", brand).getResultList();
+    }
+    
+    //What is the total value of cars owned by each owner?
+    public List<Object[]> totalValueOfOwnerCars(){
+        var q = "SELECT o.id, o.firstame, o.lastName, SUM(c.price) as total FROM owner o JOIN car c ON(o.id=c.owner_id) GROUP BY o.id, o.firstame, o.lastName ORDER BY total DESC";
+        return em.createNativeQuery(q).getResultList();
+    }
+    
+    //Which owners have cars older than a certain year
+    public List<Object[]> ownersOfCarsLessThanYear(int year){
+        var q = "SELECT o.id, o.firstame, o.lastName FROM owner o JOIN car c ON(o.id=c.owner_id) WHERE c.model_year< :x";
+        return em.createNativeQuery(q).setParameter("x", year).getResultList();
+    }
+    
+    //Owners Who Don't Have Any Car
+    public List<Owner> ownersWithNoCars(){
+        var q = "SELECT o.* FROM owner o LEFT JOIN car c ON(o.id=c.owner_id) WHERE c.id IS NULL";
+        return em.createNativeQuery(q, Owner.class).getResultList();
+    }
 }

@@ -117,4 +117,10 @@ public class CarService {
         var q = "SELECT * FROM car WHERE brand= :brand ORDER BY model_year";
         return em.createNativeQuery(q, Car.class).setParameter("brand", brand).getResultList();
     }
+    
+    //How many cars are there for each color?
+    public List<Object[]> carsCountByColor(){
+        var q = "SELECT color, COUNT(id) as num_cars FROM car GROUP BY color";
+        return em.createNativeQuery(q).getResultList();
+    }
 }
