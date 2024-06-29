@@ -25,7 +25,9 @@ public class CarMapper {
         car.setModelYear(x.getModelYear());
         car.setPrice(x.getPrice());
         car.setRegistrationNumber(x.getRegistrationNumber());
-        car.setOwner(repo.findById(x.getOwnerID()).orElse(null));
+        if(x.getOwnerID()!=null){
+            car.setOwner(repo.findById(x.getOwnerID()).orElse(null));
+        }
         return car;
     }
     
@@ -35,7 +37,9 @@ public class CarMapper {
         x.setBrand(c.getBrand());
         x.setColor(c.getColor());
         x.setModelYear(c.getModelYear());
-        x.setOwnerID(c.getOwner().getId());
+        if(c.getOwner()!=null){
+            x.setOwnerID(c.getOwner().getId());
+        }
         x.setPrice(c.getPrice());
         x.setRegistrationNumber(c.getRegistrationNumber());
         return x;

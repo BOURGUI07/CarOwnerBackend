@@ -57,7 +57,9 @@ public class CarService {
         car.setModelYear(x.getModelYear());
         car.setPrice(x.getPrice());
         car.setRegistrationNumber(x.getRegistrationNumber());
-        car.setOwner(repo1.findById(x.getOwnerID()).orElse(null));
+        if(x.getOwnerID()!=null){
+            car.setOwner(repo1.findById(x.getOwnerID()).orElse(null));
+        } 
         var savedCar = repo.save(car);
         return mapper.toDTO(savedCar);
     }
