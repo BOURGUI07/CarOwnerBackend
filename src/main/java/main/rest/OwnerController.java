@@ -4,6 +4,9 @@
  */
 package main.rest;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
 import main.dto.OwnerDTO;
@@ -35,10 +38,17 @@ public class OwnerController {
     private OwnerService service;
     
     @PostMapping("/owners")
+    @Operation(summary= "Create a New Owner")
+    @ApiResponse(responseCode="201", description="Owner Created Successfully")
     public OwnerDTO createOwner(@Valid @RequestBody OwnerDTO x){
         return service.createOwner(x);
     }
     
+    @Operation(summary="Update an Owner")
+    @ApiResponses(value={
+        @ApiResponse(responseCode="200", description="Owner Updated"),
+        @ApiResponse(responseCode="404", description="Owner Not Found")
+    })
     @PutMapping("/owners/{id}")
     public OwnerDTO updateOwner(@PathVariable Integer id,@Valid @RequestBody OwnerDTO x){
         if(id<0){
@@ -47,12 +57,18 @@ public class OwnerController {
         return service.updateOwner(id, x);
     }
     
+    @Operation(summary="Get All Owners", description="Return a List of Owners")
+    @ApiResponse(responseCode="200", description="Found All Owners Successfully")
     @GetMapping("/owners")
     public List<OwnerDTO> getOwners(){
         return service.getAll();
     }
     
     @GetMapping("/owners/{id}")
+    @Operation(summary="Find Owner By Id", description="Return a Single Owner")
+    @ApiResponses(value={
+        @ApiResponse(responseCode="200", description="Owner Found Successfully"),
+        @ApiResponse(responseCode="404", description="Owner Not Found")})
     public OwnerDTO getOwner(@PathVariable Integer id){
         if(id<0){
             throw new RessourceNotFoundException("No Owner Found for id: " + id);
@@ -60,6 +76,10 @@ public class OwnerController {
         return service.findOwner(id);
     }
     
+    @Operation(summary="Delete an Owner")
+    @ApiResponses(value={
+        @ApiResponse(responseCode="200", description="Owner Deleted"),
+        @ApiResponse(responseCode="404", description="Owner Not Found")})
     @DeleteMapping("/owners/{id}")
     public void deleteOwner(@PathVariable Integer id){
         if(id<0){
@@ -68,41 +88,50 @@ public class OwnerController {
         service.deleteOwner(id);
     }
     
+    
+    @Operation(summary="Find Owner By First Name")
     @GetMapping("/owners/findByName")
     public Owner findOwnerByName(@RequestParam String name){
         return service.findOwnerByFirstName(name);
     }
     
+    @Operation(summary="Owners Who Have More Than One Car")
     @GetMapping("/owners/moreThanOneCar")
     public List<Object[]> ownersWhoHaveMoreThanOneCar(){
         return service.ownersWhoHaveMoreThanOneCar();
     }
     
+    @Operation(summary="Most Expensive Car for Each Owner")
     @GetMapping("/owners/mostExpensiveByOwner")
     public List<Object[]> mostExpensiveCarByOwner(){
         return service.mostExpensiveCarByOwner();
     }
     
+    @Operation(summary="Average Car Price for Each Owner")
     @GetMapping("/owners/avgPriceByOwner")
     public List<Object[]> avgPriceByOwner(){
         return service.avgPriceByOwner();
     }
     
+    @Operation(summary="Owners of Input Brand")
     @GetMapping("/owners/ownersOfBrand")
     public List<Object[]> ownersOfBrand(@RequestParam String brand){
         return service.ownersOfBrand(brand);
     }
     
+    @Operation(summary="Total Value of Cars for Each Owner")
     @GetMapping("/owners/totalPriceEachOwner")
     public List<Object[]> totalValueOfOwnerCars(){
         return service.totalValueOfOwnerCars();
     }
     
+    @Operation(summary="Owners Whose Car's Model Year is Less Than Input Year")
     @GetMapping("/owners/ownersOfYearLess")
     public List<Object[]> ownersOfCarsLessThanYear(@RequestParam int year){
         return service.ownersOfCarsLessThanYear(year);
     }
     
+    @Operation(summary="Owners With No Car")
     @GetMapping("/owners/withNoCar")
     public List<Owner> ownersWithNoCars(){
         return service.ownersWithNoCars();
