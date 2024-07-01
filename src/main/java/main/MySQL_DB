@@ -20,3 +20,20 @@ create table car(
     owner_id integer not null,
     foreign key (owner_id) references owner(id)
 );
+
+drop table if exists app_user;
+CREATE TABLE app_user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    role VARCHAR(50) NOT NULL
+);
+
+drop table if exists app_user_seq;
+CREATE TABLE app_user_seq (
+    seq_name VARCHAR(50) NOT NULL,
+    seq_number BIGINT NOT NULL,
+    PRIMARY KEY (seq_name)
+);
+
+INSERT INTO app_user_seq (seq_name, seq_number) VALUES ('user', 0);
