@@ -14,6 +14,8 @@ import main.entity.Owner;
 import main.handler.RessourceNotFoundException;
 import main.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,8 +42,8 @@ public class OwnerController {
     @PostMapping("/owners")
     @Operation(summary= "Create a New Owner")
     @ApiResponse(responseCode="201", description="Owner Created Successfully")
-    public OwnerDTO createOwner(@Valid @RequestBody OwnerDTO x){
-        return service.createOwner(x);
+    public ResponseEntity<OwnerDTO> createOwner(@Valid @RequestBody OwnerDTO x){
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createOwner(x));
     }
     
     @Operation(summary="Update an Owner")
@@ -50,18 +52,18 @@ public class OwnerController {
         @ApiResponse(responseCode="404", description="Owner Not Found")
     })
     @PutMapping("/owners/{id}")
-    public OwnerDTO updateOwner(@PathVariable Integer id,@Valid @RequestBody OwnerDTO x){
+    public ResponseEntity<OwnerDTO> updateOwner(@PathVariable Integer id,@Valid @RequestBody OwnerDTO x){
         if(id<0){
             throw new RessourceNotFoundException("No Owner Found for id: " + id);
         }
-        return service.updateOwner(id, x);
+        return ResponseEntity.ok(service.updateOwner(id, x));
     }
     
     @Operation(summary="Get All Owners", description="Return a List of Owners")
     @ApiResponse(responseCode="200", description="Found All Owners Successfully")
     @GetMapping("/owners")
-    public List<OwnerDTO> getOwners(){
-        return service.getAll();
+    public ResponseEntity<List<OwnerDTO>> getOwners(){
+        return ResponseEntity.ok(service.getAll());
     }
     
     @GetMapping("/owners/{id}")
@@ -69,11 +71,16 @@ public class OwnerController {
     @ApiResponses(value={
         @ApiResponse(responseCode="200", description="Owner Found Successfully"),
         @ApiResponse(responseCode="404", description="Owner Not Found")})
-    public OwnerDTO getOwner(@PathVariable Integer id){
+    public ResponseEntity<OwnerDTO> getOwner(@PathVariable Integer id){
         if(id<0){
             throw new RessourceNotFoundException("No Owner Found for id: " + id);
         }
-        return service.findOwner(id);
+        var owner = service.findOwner(id);
+        if(owner==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        
+        return ResponseEntity.ok(owner);
     }
     
     @Operation(summary="Delete an Owner")
@@ -81,11 +88,12 @@ public class OwnerController {
         @ApiResponse(responseCode="200", description="Owner Deleted"),
         @ApiResponse(responseCode="404", description="Owner Not Found")})
     @DeleteMapping("/owners/{id}")
-    public void deleteOwner(@PathVariable Integer id){
+    public ResponseEntity<Void> deleteOwner(@PathVariable Integer id){
         if(id<0){
             throw new RessourceNotFoundException("No Owner Found for id: " + id);
         }
         service.deleteOwner(id);
+        return ResponseEntity.noContent().build();
     }
     
     

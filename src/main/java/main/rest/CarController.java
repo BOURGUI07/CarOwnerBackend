@@ -14,6 +14,8 @@ import main.entity.Car;
 import main.handler.RessourceNotFoundException;
 import main.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,8 +42,8 @@ public class CarController {
     @Operation(summary="Get All Cars", description="Return a List of Cars")
     @ApiResponse(responseCode="200", description="Found All Cars Successfully")
     @GetMapping("/cars")
-    public List<CarDTO> getCars(){
-        return service.getAll();
+    public ResponseEntity<List<CarDTO>> getCars(){
+        return ResponseEntity.ok(service.getAll());
     }
     
     @Operation(summary="Find Car By Id", description="Return a Single Car")
@@ -49,18 +51,23 @@ public class CarController {
         @ApiResponse(responseCode="200", description="Car Found Successfully"),
         @ApiResponse(responseCode="404", description="Car Not Found")})
     @GetMapping("/cars/{id}")
-    public CarDTO getCar(@PathVariable Integer id){
+    public ResponseEntity<CarDTO> getCar(@PathVariable Integer id){
         if(id<0){
             throw new RessourceNotFoundException("No Car Found for id: " + id);
         }
-        return service.findCar(id);
+        var car = service.findCar(id);
+        if(car==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(car);
     }
     
     @Operation(summary= "Create a New Car")
     @ApiResponse(responseCode="201", description="Car Created Successfully")
     @PostMapping("/cars")
-    public CarDTO createCar(@Valid @RequestBody CarDTO x){
-        return service.createCar(x);
+    public ResponseEntity<CarDTO> createCar(@Valid @RequestBody CarDTO x){
+        var createdCar = service.createCar(x);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCar);
     }
     
     @Operation(summary="Update a Car")
@@ -69,11 +76,11 @@ public class CarController {
         @ApiResponse(responseCode="404", description="Car Not Found")
     })
     @PutMapping("/cars/{id}")
-    public CarDTO updateCar(@PathVariable Integer id,@Valid @RequestBody CarDTO x){
+    public ResponseEntity<CarDTO> updateCar(@PathVariable Integer id,@Valid @RequestBody CarDTO x){
         if(id<0){
             throw new RessourceNotFoundException("No Car Found for id: " + id);
         }
-        return service.updateCar(id, x);
+        return ResponseEntity.ok(service.updateCar(id, x));
     }
     
     @Operation(summary="Delete a Car")
@@ -81,11 +88,12 @@ public class CarController {
         @ApiResponse(responseCode="200", description="Car Deleted"),
         @ApiResponse(responseCode="404", description="Car Not Found")})
     @DeleteMapping("/cars/{id}")
-    public void deleteCar(@PathVariable Integer id){
+    public ResponseEntity<Void> deleteCar(@PathVariable Integer id){
         if(id<0){
             throw new RessourceNotFoundException("No Car Found for id: " + id);
         }
         service.deleteCar(id);
+        return ResponseEntity.noContent().build();
     }
     
     @Operation(summary="Find Cars By Brand")
