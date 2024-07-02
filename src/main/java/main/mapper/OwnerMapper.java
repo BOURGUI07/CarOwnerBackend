@@ -4,6 +4,7 @@
  */
 package main.mapper;
 
+import java.util.ArrayList;
 import main.dto.OwnerDTO;
 import main.entity.Owner;
 import main.repo.CarRepo;
@@ -30,11 +31,12 @@ public class OwnerMapper {
     }
     
     public OwnerDTO toDTO(Owner o){
-        var x = new OwnerDTO();
-        x.setId(o.getId());
-        x.setFirstName(o.getFirstName());
-        x.setLastName(o.getLastName());
-        x.setCarsIDs(repo.findIdsByCars(o.getCars()));
+        var x = new OwnerDTO(o.getId(), o.getFirstName(), o.getLastName(), repo.findIdsByCars(o.getCars()));
+        if(o.getCars().isEmpty()){
+            x = new OwnerDTO(o.getId(), o.getFirstName(), o.getLastName(), new ArrayList<>());
+        }else if(o.getCars()==null){
+            x = new OwnerDTO(o.getId(), o.getFirstName(), o.getLastName(), null);
+        }
         return x;
     }
 }

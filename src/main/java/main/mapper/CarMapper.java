@@ -32,16 +32,13 @@ public class CarMapper {
     }
     
     public CarDTO toDTO(Car c){
-        var x = new CarDTO();
-        x.setId(c.getId());
-        x.setBrand(c.getBrand());
-        x.setColor(c.getColor());
-        x.setModelYear(c.getModelYear());
+        CarDTO x;
         if(c.getOwner()!=null){
-            x.setOwnerID(c.getOwner().getId());
+            x = new CarDTO(c.getId(),c.getBrand(),c.getColor(),c.getRegistrationNumber(),c.getModelYear(),c.getPrice(),c.getOwner().getId());
+        }else{
+            x = new CarDTO(c.getId(),c.getBrand(),c.getColor(),c.getRegistrationNumber(),c.getModelYear(),c.getPrice(),null);
         }
-        x.setPrice(c.getPrice());
-        x.setRegistrationNumber(c.getRegistrationNumber());
+        
         return x;
     }
 }

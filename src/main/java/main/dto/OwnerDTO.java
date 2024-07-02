@@ -11,19 +11,18 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Value;
 
 /**
  *
  * @author hp
  */
-@Getter
-@Setter
-@NoArgsConstructor
+@Value
 public class OwnerDTO {
     private Integer id;
     @NotBlank(message="First Name is Mandatory")
     @Size(min=2, max=50, message="First Name Must be At least 2 characters and doesn't exceed 50")
     private String firstName;
     private String lastName;
-    private List<Integer> carsIDs = new ArrayList<>();
+    private List<Integer> carsIDs;
 }

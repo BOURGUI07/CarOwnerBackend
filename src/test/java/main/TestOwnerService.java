@@ -7,6 +7,7 @@ package main;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import main.dto.OwnerDTO;
@@ -44,7 +45,7 @@ public class TestOwnerService {
     @InjectMocks
     private OwnerService service;
     private Owner o = new Owner();
-    private OwnerDTO x = new OwnerDTO();
+    private OwnerDTO x;
     private Validator validator;
     
     public TestOwnerService() {
@@ -52,9 +53,7 @@ public class TestOwnerService {
         o.setFirstName("youness");
         o.setLastName("Bourgui");
         
-        x.setId(1);
-        x.setFirstName("youness");
-        x.setLastName("Bourgui");
+        x= new OwnerDTO(1,"youness", "Bourgui", new ArrayList<>());
     }
     
     
@@ -108,8 +107,7 @@ public class TestOwnerService {
     
     @Test
     void testOwnerName(){
-        var owner = new OwnerDTO();
-        owner.setFirstName("");
+        var owner = new OwnerDTO(1, "", "Bourgui", null);
         assertThrows(ConstraintViolationException.class, () -> {
             service.createOwner(owner);
         });

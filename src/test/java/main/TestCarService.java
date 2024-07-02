@@ -43,7 +43,7 @@ public class TestCarService {
     @InjectMocks
     private CarService service;
     private Car c = new Car();
-    private CarDTO x = new CarDTO();
+    private CarDTO x;
     private Validator validator;
     
     public TestCarService() {
@@ -54,12 +54,7 @@ public class TestCarService {
         c.setPrice(45000.00);
         c.setRegistrationNumber("F11-D2000");
         
-        x.setId(1);
-        x.setBrand("bmw");
-        x.setColor("black");
-        x.setModelYear(2014);
-        x.setPrice(45000.00);
-        x.setRegistrationNumber("F11-D2000");
+        x = new CarDTO(1,"bmw","black","F11-D2000",2014,45000.00,null);
     }
     
     
@@ -113,8 +108,7 @@ public class TestCarService {
     
     @Test
     void testOwnerName(){
-        var car = new CarDTO();
-        car.setBrand("");
+        var car = new CarDTO(1,"","black","F11-D2000",2014,45000.00,null);
         assertThrows(ConstraintViolationException.class, () -> {
             service.createCar(car);
         });

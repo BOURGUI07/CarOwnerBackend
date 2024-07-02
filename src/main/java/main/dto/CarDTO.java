@@ -9,14 +9,13 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Value;
 
 /**
  *
  * @author hp
  */
-@Getter
-@Setter
-@NoArgsConstructor
+@Value
 public class CarDTO {
     private Integer id;
     @NotBlank(message="Brand Name is Mandatory")
