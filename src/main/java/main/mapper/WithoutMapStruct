@@ -1,0 +1,55 @@
+@Service
+public class OwnerMapper {
+    @Autowired
+    private CarRepo repo;
+    public Owner toOwner(OwnerDTO x){
+        var o = new Owner();
+        o.setFirstName(x.getFirstName());
+        o.setLastName(x.getLastName());
+        if(x.getCarsIDs()!=null && !x.getCarsIDs().isEmpty()){
+            o.setCars(repo.findAllById(x.getCarsIDs()));
+        }
+        o.setCars(repo.findAllById(x.getCarsIDs()));
+        return o;
+    }
+    
+    public OwnerDTO toDTO(Owner o){
+        var x = new OwnerDTO(o.getId(), o.getFirstName(), o.getLastName(), repo.findIdsByCars(o.getCars()));
+        if(o.getCars().isEmpty()){
+            x = new OwnerDTO(o.getId(), o.getFirstName(), o.getLastName(), new ArrayList<>());
+        }else if(o.getCars()==null){
+            x = new OwnerDTO(o.getId(), o.getFirstName(), o.getLastName(), null);
+        }
+        return x;
+    }
+}
+
+
+@Service
+public class CarMapper {
+    @Autowired
+    private OwnerRepo repo;
+    public Car toCar(CarDTO x){
+        var car = new Car();
+        car.setBrand(x.getBrand());
+        car.setColor(x.getColor());
+        car.setModelYear(x.getModelYear());
+        car.setPrice(x.getPrice());
+        car.setRegistrationNumber(x.getRegistrationNumber());
+        if(x.getOwnerID()!=null){
+            car.setOwner(repo.findById(x.getOwnerID()).orElse(null));
+        }
+        return car;
+    }
+    
+    public CarDTO toDTO(Car c){
+        CarDTO x;
+        if(c.getOwner()!=null){
+            x = new CarDTO(c.getId(),c.getBrand(),c.getColor(),c.getRegistrationNumber(),c.getModelYear(),c.getPrice(),c.getOwner().getId());
+        }else{
+            x = new CarDTO(c.getId(),c.getBrand(),c.getColor(),c.getRegistrationNumber(),c.getModelYear(),c.getPrice(),null);
+        }
+        
+        return x;
+    }
+}

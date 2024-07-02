@@ -37,13 +37,13 @@ public class OwnerService {
     }
     @Autowired
     public OwnerService(OwnerMapper mapper, OwnerRepo repo, CarRepo carRepo) {
-        this.mapper = mapper;
+        this.mapper = OwnerMapper.INSTANCE;
         this.repo = repo;
         this.carRepo = carRepo;
     }
     @PersistenceContext
     private EntityManager em;
-    private OwnerMapper mapper;
+    private final OwnerMapper mapper;
     private OwnerRepo repo;
     private CarRepo carRepo;
     private Validator validator;

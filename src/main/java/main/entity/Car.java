@@ -28,14 +28,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Car {
 
-    public Car(String brand, String color, String registrationNumber, int modelYear, double price, Owner owner) {
-        this.brand = brand;
-        this.color = color;
-        this.registrationNumber = registrationNumber;
-        this.modelYear = modelYear;
-        this.price = price;
-        this.owner = owner;
-    }
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")

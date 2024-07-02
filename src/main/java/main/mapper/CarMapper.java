@@ -6,39 +6,18 @@ package main.mapper;
 
 import main.dto.CarDTO;
 import main.entity.Car;
-import main.repo.OwnerRepo;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  *
  * @author hp
  */
-@Service
-public class CarMapper {
+@Mapper
+public interface CarMapper {
     @Autowired
-    private OwnerRepo repo;
-    public Car toCar(CarDTO x){
-        var car = new Car();
-        car.setBrand(x.getBrand());
-        car.setColor(x.getColor());
-        car.setModelYear(x.getModelYear());
-        car.setPrice(x.getPrice());
-        car.setRegistrationNumber(x.getRegistrationNumber());
-        if(x.getOwnerID()!=null){
-            car.setOwner(repo.findById(x.getOwnerID()).orElse(null));
-        }
-        return car;
-    }
-    
-    public CarDTO toDTO(Car c){
-        CarDTO x;
-        if(c.getOwner()!=null){
-            x = new CarDTO(c.getId(),c.getBrand(),c.getColor(),c.getRegistrationNumber(),c.getModelYear(),c.getPrice(),c.getOwner().getId());
-        }else{
-            x = new CarDTO(c.getId(),c.getBrand(),c.getColor(),c.getRegistrationNumber(),c.getModelYear(),c.getPrice(),null);
-        }
-        
-        return x;
-    }
+    CarMapper INSTANCE = Mappers.getMapper(CarMapper.class);
+    CarDTO toDTO(Car c);
+    Car toCar(CarDTO x);
 }

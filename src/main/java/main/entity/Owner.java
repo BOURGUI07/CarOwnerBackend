@@ -32,10 +32,6 @@ import lombok.Setter;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Owner {
 
-    public Owner(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")

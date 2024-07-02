@@ -32,7 +32,7 @@ public class CarService {
     @Autowired
     public CarService(CarRepo repo, OwnerRepo repo1, CarMapper mapper) {
         this.repo = repo;
-        this.mapper = mapper;
+        this.mapper = CarMapper.INSTANCE;
         this.repo1=repo1;
     }
     @PersistenceContext
@@ -40,7 +40,7 @@ public class CarService {
     
     
     private CarRepo repo;
-    private CarMapper mapper;
+    private final CarMapper mapper;
     private OwnerRepo repo1;
     private Validator validator;
 
