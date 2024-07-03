@@ -5,6 +5,7 @@
 package main.client;
 
 import main.dto.CarDTO;
+import main.dto.CountCarsByColor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -41,5 +42,30 @@ public class CarClient {
     
     public Mono<Void> deleteOwner(Integer id){
         return client.delete().uri("/{id}",id).retrieve().bodyToMono(Void.class);
+    }
+    
+    public Flux<CarDTO> findCarsOfBrand(String brand){
+        return this.client.get().uri("/findByBrand", brand).retrieve().bodyToFlux(CarDTO.class);
+    }
+    
+    public Flux<CarDTO> findsCarsByYear(int year){
+        return this.client.get().uri("/findByYear", year).retrieve().bodyToFlux(CarDTO.class);
+    }
+    
+    public Flux<CarDTO> findCarsByColor(String color){
+        return this.client.get().uri("/findByColor", color).retrieve().bodyToFlux(CarDTO.class);
+    }
+    
+    public Flux<CarDTO> findCarsByColorOrBrand(String color, String brand){
+        Object[] array = {color, brand};
+        return this.client.get().uri("/findByColorOrBrand", array).retrieve().bodyToFlux(CarDTO.class);
+    }
+    
+    public Flux<CarDTO> findCarsOfBrandSortByYear(String brand){
+        return this.client.get().uri("/findByBrandSortByYear", brand).retrieve().bodyToFlux(CarDTO.class);
+    }
+    
+    public Flux<CountCarsByColor> countCarsEachColor(String brand){
+        return this.client.get().uri("/countCarsEachColor", brand).retrieve().bodyToFlux(CountCarsByColor.class);
     }
 }

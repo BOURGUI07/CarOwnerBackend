@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
 import main.dto.CarDTO;
+import main.dto.CountCarsByColor;
 import main.entity.Car;
 import main.handler.RessourceNotFoundException;
 import main.service.CarService;
@@ -98,37 +99,37 @@ public class CarController {
     
     @Operation(summary="Find Cars By Brand")
     @GetMapping("/cars/findByBrand")
-    public List<Car> findCarsByBrand(@RequestParam String brand){
+    public List<CarDTO> findCarsByBrand(@RequestParam String brand){
         return service.getCarsByBrand(brand);
     }
     
     @Operation(summary="Find Cars By Color ")
     @GetMapping("/cars/findByColor")
-    public List<Car> findCarsByColor(@RequestParam String color){
+    public List<CarDTO> findCarsByColor(@RequestParam String color){
         return service.getCarsByColor(color);
     }
     
     @Operation(summary="Find Cars By Model Year")
     @GetMapping("/cars/findByYear")
-    public List<Car> findCarsByYear(@RequestParam int year){
+    public List<CarDTO> findCarsByYear(@RequestParam int year){
         return service.getCarsByYear(year);
     }
     
     @Operation(summary="Find Cars By Color or Brand")
     @GetMapping("/cars/findByColorOrBrand")
-    public List<Car> findCarsByColorOrBrand(@RequestParam String color, @RequestParam String brand){
+    public List<CarDTO> findCarsByColorOrBrand(@RequestParam String color, @RequestParam String brand){
         return service.getCarsByColorOrBrand(color, brand);
     }
     
     @Operation(summary="Find Cars By Brand and Sort By Year")
     @GetMapping("/cars/findByBrandSortByYear")
-    public List<Car> findCarsByBrandSortyear(@RequestParam String brand){
+    public List<CarDTO> findCarsByBrandSortyear(@RequestParam String brand){
         return service.getCarsByBrandSortByYear(brand);
     }
     
     @Operation(summary="Count How Many Cars For Each Color")
     @GetMapping("/cars/countCarsEachColor")
-    public List<Object[]> carsCountByColor(){
+    public List<CountCarsByColor> carsCountByColor(){
         return service.carsCountByColor();
     }
    

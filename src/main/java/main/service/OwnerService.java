@@ -15,7 +15,13 @@ import jakarta.validation.Validator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import main.dto.AveragePriceByOwner;
+import main.dto.MostExpensiveCarByOwner;
 import main.dto.OwnerDTO;
+import main.dto.OwnersOfBrand;
+import main.dto.OwnersOfCarsLessThanYear;
+import main.dto.OwnersWithMoreCars;
+import main.dto.TotalValueOfOwnerCars;
 import main.entity.Owner;
 import main.mapper.OwnerMapper;
 import main.repo.CarRepo;
@@ -107,10 +113,10 @@ public class OwnerService {
         return null;
     }
     
-    public Owner findOwnerByFirstName(String firstName){
+    public OwnerDTO findOwnerByFirstName(String firstName){
         var q = "SELECT * FROM owner WHERE firstname= :x";
         try{
-            return(Owner)  em.createNativeQuery(q, Owner.class).setParameter("x", firstName).getSingleResult();
+            return mapper.toDTO((Owner)  em.createNativeQuery(q, Owner.class).setParameter("x", firstName).getSingleResult());
         }catch(NoResultException e){
             return null;
         }catch(NonUniqueResultException e){
@@ -119,44 +125,50 @@ public class OwnerService {
     }
     
     //Which owners have more than one car?
-    public List<Object[]> ownersWhoHaveMoreThanOneCar(){
+    public List<OwnersWithMoreCars> ownersWhoHaveMoreThanOneCar(){
         var q = "SELECT o.id, o.firstame, o.lastName, COUNT(c.id) as num_cars FROM owner o JOIN car c ON(o.id=c.owner_id) GROUP BY o.id, o.firstame, o.lastName HAVING COUNT(c.id)>1 ORDER BY num_cars DESC";
-        return em.createNativeQuery(q).getResultList();
+        List<Object[]> results= em.createNativeQuery(q).getResultList();
+        return results.stream().map(x -> new OwnersWithMoreCars((Integer)x[0],(String)x[1],(String)x[2],(int)x[3])).collect(Collectors.toList());
     }
     
     //What is the most expensive car owned by each owner?
-    public List<Object[]> mostExpensiveCarByOwner(){
+    public List<MostExpensiveCarByOwner> mostExpensiveCarByOwner(){
         var q = "SELECT o.id, o.firstame, o.lastName, MAX(c.price) as max_price FROM owner o JOIN car c ON(o.id=c.owner_id) GROUP BY o.id, o.firstame, o.lastName ORDER BY max_price DESC";
-        return em.createNativeQuery(q).getResultList();
+        List<Object[]> results= em.createNativeQuery(q).getResultList();
+        return results.stream().map(x -> new MostExpensiveCarByOwner((Integer)x[0],(String)x[1],(String)x[2],(double)x[3])).collect(Collectors.toList());
     }
     
     //What is the average price of cars owned by each owner?
-    public List<Object[]> avgPriceByOwner(){
+    public List<AveragePriceByOwner> avgPriceByOwner(){
         var q = "SELECT o.id, o.firstame, o.lastName, AVG(c.price) as avg_price FROM owner o JOIN car c ON(o.id=c.owner_id) GROUP BY o.id, o.firstame, o.lastName ORDER BY avg_price DESC";
-        return em.createNativeQuery(q).getResultList();
+        List<Object[]> results= em.createNativeQuery(q).getResultList();
+        return results.stream().map(x -> new AveragePriceByOwner((Integer)x[0],(String)x[1],(String)x[2],(double)x[3])).collect(Collectors.toList());
     }
     
     //Which owners have cars of a specific brand
-    public List<Object[]> ownersOfBrand(String brand){
+    public List<OwnersOfBrand> ownersOfBrand(String brand){
         var q = "SELECT o.id, o.firstame, o.lastName FROM owner o JOIN car c ON(o.id=c.owner_id) WHERE c.brand= :brand";
-        return em.createNativeQuery(q).setParameter("brand", brand).getResultList();
+        List<Object[]> results= em.createNativeQuery(q).setParameter("brand", brand).getResultList();
+        return results.stream().map(x -> new OwnersOfBrand((Integer)x[0],(String)x[1],(String)x[2])).collect(Collectors.toList());
     }
     
     //What is the total value of cars owned by each owner?
-    public List<Object[]> totalValueOfOwnerCars(){
+    public List<TotalValueOfOwnerCars> totalValueOfOwnerCars(){
         var q = "SELECT o.id, o.firstame, o.lastName, SUM(c.price) as total FROM owner o JOIN car c ON(o.id=c.owner_id) GROUP BY o.id, o.firstame, o.lastName ORDER BY total DESC";
-        return em.createNativeQuery(q).getResultList();
+        List<Object[]> results= em.createNativeQuery(q).getResultList();
+        return results.stream().map(x -> new TotalValueOfOwnerCars((Integer)x[0],(String)x[1],(String)x[2],(double)x[3])).collect(Collectors.toList());
     }
     
     //Which owners have cars older than a certain year
-    public List<Object[]> ownersOfCarsLessThanYear(int year){
+    public List<OwnersOfCarsLessThanYear> ownersOfCarsLessThanYear(int year){
         var q = "SELECT o.id, o.firstame, o.lastName FROM owner o JOIN car c ON(o.id=c.owner_id) WHERE c.model_year< :x";
-        return em.createNativeQuery(q).setParameter("x", year).getResultList();
+        List<Object[]> results= em.createNativeQuery(q).setParameter("x", year).getResultList();
+        return results.stream().map(x -> new OwnersOfCarsLessThanYear((Integer)x[0],(String)x[1],(String)x[2])).collect(Collectors.toList());
     }
     
     //Owners Who Don't Have Any Car
-    public List<Owner> ownersWithNoCars(){
+    public List<OwnerDTO> ownersWithNoCars(){
         var q = "SELECT o.* FROM owner o LEFT JOIN car c ON(o.id=c.owner_id) WHERE c.id IS NULL";
-        return em.createNativeQuery(q, Owner.class).getResultList();
+        return (List<OwnerDTO>) em.createNativeQuery(q, Owner.class).getResultList().stream().map(x -> mapper.toDTO((Owner) x)).collect(Collectors.toList());
     }
 }

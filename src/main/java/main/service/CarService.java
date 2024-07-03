@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import main.dto.CarDTO;
+import main.dto.CountCarsByColor;
 import main.entity.Car;
 import main.mapper.CarMapper;
 import main.repo.CarRepo;
@@ -108,34 +109,43 @@ public class CarService {
         clearCache();
     }
     
-    public List<Car> getCarsByBrand(String brand){
+    public List<CarDTO> getCarsByBrand(String brand){
         var q = "SELECT * FROM car WHERE brand= :brand";
-        return em.createNativeQuery(q, Car.class).setParameter("brand", brand).getResultList();
+        var results =  em.createNativeQuery(q, Car.class).setParameter("brand", brand).getResultList();
+        return (List<CarDTO>) results.stream().map(x -> mapper.toDTO((Car) x)).collect(Collectors.toList());
     }
     
-    public List<Car> getCarsByYear(int year){
+    public List<CarDTO> getCarsByYear(int year){
         var q = "SELECT * FROM car WHERE model_year= :x";
-        return em.createNativeQuery(q, Car.class).setParameter("x", year).getResultList();
+        var results= em.createNativeQuery(q, Car.class).setParameter("x", year).getResultList();
+        return (List<CarDTO>) results.stream().map(x -> mapper.toDTO((Car) x)).collect(Collectors.toList());
     }
     
-    public List<Car> getCarsByColor(String color){
+    public List<CarDTO> getCarsByColor(String color){
         var q = "SELECT * FROM car WHERE color= :x";
-        return em.createNativeQuery(q, Car.class).setParameter("x", color).getResultList();
+        var results= em.createNativeQuery(q, Car.class).setParameter("x", color).getResultList();
+        return (List<CarDTO>) results.stream().map(x -> mapper.toDTO((Car) x)).collect(Collectors.toList());
     }
     
-    public List<Car> getCarsByColorOrBrand(String color, String brand){
+    public List<CarDTO> getCarsByColorOrBrand(String color, String brand){
         var q = "SELECT * FROM car WHERE color= :color OR brand= :brand";
-        return em.createNativeQuery(q, Car.class).setParameter("brand", brand).setParameter("color",color).getResultList();
+        var results= em.createNativeQuery(q, Car.class).setParameter("brand", brand).setParameter("color",color).getResultList();
+        return (List<CarDTO>) results.stream().map(x -> mapper.toDTO((Car) x)).collect(Collectors.toList());
     }
     
-    public List<Car> getCarsByBrandSortByYear(String brand){
+    public List<CarDTO> getCarsByBrandSortByYear(String brand){
         var q = "SELECT * FROM car WHERE brand= :brand ORDER BY model_year";
-        return em.createNativeQuery(q, Car.class).setParameter("brand", brand).getResultList();
+        var results= em.createNativeQuery(q, Car.class).setParameter("brand", brand).getResultList();
+        return (List<CarDTO>) results.stream().map(x -> mapper.toDTO((Car) x)).collect(Collectors.toList());
+
     }
     
     //How many cars are there for each color?
-    public List<Object[]> carsCountByColor(){
+    public List<CountCarsByColor> carsCountByColor(){
         var q = "SELECT color, COUNT(id) as num_cars FROM car GROUP BY color";
-        return em.createNativeQuery(q).getResultList();
+        List<Object[]> results =  em.createNativeQuery(q).getResultList();
+        return results.stream().map(x -> new CountCarsByColor((String) x[0],(int) x[1])).collect(Collectors.toList());
     }
+    
+    
 }

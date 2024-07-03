@@ -9,7 +9,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
+import main.dto.AveragePriceByOwner;
+import main.dto.MostExpensiveCarByOwner;
 import main.dto.OwnerDTO;
+import main.dto.OwnersOfBrand;
+import main.dto.OwnersOfCarsLessThanYear;
+import main.dto.OwnersWithMoreCars;
+import main.dto.TotalValueOfOwnerCars;
 import main.entity.Owner;
 import main.handler.RessourceNotFoundException;
 import main.service.OwnerService;
@@ -99,49 +105,49 @@ public class OwnerController {
     
     @Operation(summary="Find Owner By First Name")
     @GetMapping("/owners/findByName")
-    public Owner findOwnerByName(@RequestParam String name){
-        return service.findOwnerByFirstName(name);
+    public ResponseEntity<OwnerDTO> findOwnerByName(@RequestParam String name){
+        return ResponseEntity.ok(service.findOwnerByFirstName(name));
     }
     
     @Operation(summary="Owners Who Have More Than One Car")
     @GetMapping("/owners/moreThanOneCar")
-    public List<Object[]> ownersWhoHaveMoreThanOneCar(){
+    public List<OwnersWithMoreCars> ownersWhoHaveMoreThanOneCar(){
         return service.ownersWhoHaveMoreThanOneCar();
     }
     
     @Operation(summary="Most Expensive Car for Each Owner")
     @GetMapping("/owners/mostExpensiveByOwner")
-    public List<Object[]> mostExpensiveCarByOwner(){
+    public List<MostExpensiveCarByOwner> mostExpensiveCarByOwner(){
         return service.mostExpensiveCarByOwner();
     }
     
     @Operation(summary="Average Car Price for Each Owner")
     @GetMapping("/owners/avgPriceByOwner")
-    public List<Object[]> avgPriceByOwner(){
+    public List<AveragePriceByOwner> avgPriceByOwner(){
         return service.avgPriceByOwner();
     }
     
     @Operation(summary="Owners of Input Brand")
     @GetMapping("/owners/ownersOfBrand")
-    public List<Object[]> ownersOfBrand(@RequestParam String brand){
+    public List<OwnersOfBrand> ownersOfBrand(@RequestParam String brand){
         return service.ownersOfBrand(brand);
     }
     
     @Operation(summary="Total Value of Cars for Each Owner")
     @GetMapping("/owners/totalPriceEachOwner")
-    public List<Object[]> totalValueOfOwnerCars(){
+    public List<TotalValueOfOwnerCars> totalValueOfOwnerCars(){
         return service.totalValueOfOwnerCars();
     }
     
     @Operation(summary="Owners Whose Car's Model Year is Less Than Input Year")
     @GetMapping("/owners/ownersOfYearLess")
-    public List<Object[]> ownersOfCarsLessThanYear(@RequestParam int year){
+    public List<OwnersOfCarsLessThanYear> ownersOfCarsLessThanYear(@RequestParam int year){
         return service.ownersOfCarsLessThanYear(year);
     }
     
     @Operation(summary="Owners With No Car")
     @GetMapping("/owners/withNoCar")
-    public List<Owner> ownersWithNoCars(){
+    public List<OwnerDTO> ownersWithNoCars(){
         return service.ownersWithNoCars();
     }
     

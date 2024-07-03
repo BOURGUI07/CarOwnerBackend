@@ -4,7 +4,13 @@
  */
 package main.client;
 
+import main.dto.AveragePriceByOwner;
+import main.dto.MostExpensiveCarByOwner;
 import main.dto.OwnerDTO;
+import main.dto.OwnersOfBrand;
+import main.dto.OwnersOfCarsLessThanYear;
+import main.dto.OwnersWithMoreCars;
+import main.dto.TotalValueOfOwnerCars;
 import main.entity.Owner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +52,35 @@ public class OwnerClient {
     }
     
     
+    public Mono<OwnerDTO> findOwnerByFirstName(String firstName){
+        return webClient.get().uri("/findByName", firstName).retrieve().bodyToMono(OwnerDTO.class);
+    }
     
+    public Flux<OwnersWithMoreCars> ownersWithMoreThanOneCar(){
+        return webClient.get().uri("/moreThanOneCar").retrieve().bodyToFlux(OwnersWithMoreCars.class);
+    }
+    
+    public Flux<MostExpensiveCarByOwner> mostExpensiveCarByOwner(){
+        return webClient.get().uri("/mostExpensiveByOwner").retrieve().bodyToFlux(MostExpensiveCarByOwner.class);
+    }
+    
+    public Flux<AveragePriceByOwner> avgPriceByOwner(){
+        return webClient.get().uri("/avgPriceByOwner").retrieve().bodyToFlux(AveragePriceByOwner.class);
+    }
+    
+    public Flux<OwnersOfBrand> ownersOfBrand(String brand){
+        return webClient.get().uri("/ownerOfBrand", brand).retrieve().bodyToFlux(OwnersOfBrand.class);
+    }
+    public Flux<TotalValueOfOwnerCars> totalValueOfOwnerCars(){
+        return webClient.get().uri("/totalPriceEachOwner").retrieve().bodyToFlux(TotalValueOfOwnerCars.class);
+    }
+    
+    public Flux<OwnersOfCarsLessThanYear> ownersOfBrand(int year){
+        return webClient.get().uri("/ownersOfYearLess", year).retrieve().bodyToFlux(OwnersOfCarsLessThanYear.class);
+    }
+    
+    public Flux<OwnerDTO> ownersWithNoCars(){
+        return this.webClient.get().uri("/withNoCar").retrieve().bodyToFlux(OwnerDTO.class);
+    }
+           
 }
