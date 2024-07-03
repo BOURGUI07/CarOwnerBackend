@@ -32,15 +32,15 @@ public class CarService {
     @Autowired
     public CarService(CarRepo repo, OwnerRepo repo1, CarMapper mapper) {
         this.repo = repo;
-        this.mapper = CarMapper.INSTANCE;
         this.repo1=repo1;
+        this.mapper=mapper;
     }
+    private CarMapper mapper;
     @PersistenceContext
     private EntityManager em;
     
     
     private CarRepo repo;
-    private final CarMapper mapper;
     private OwnerRepo repo1;
     private Validator validator;
 

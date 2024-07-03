@@ -4,21 +4,38 @@
  */
 package main.mapper;
 
+import java.util.ArrayList;
 import main.dto.OwnerDTO;
 import main.entity.Owner;
+import main.repo.CarRepo;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-/**
- *
- * @author hp
- */
-@Mapper
-public interface OwnerMapper {
+@Service
+public class OwnerMapper {
     @Autowired
-    OwnerMapper INSTANCE = Mappers.getMapper(OwnerMapper.class);
+    private CarRepo repo;
+    public Owner toOwner(OwnerDTO x){
+        var o = new Owner();
+        o.setFirstName(x.getFirstName());
+        o.setLastName(x.getLastName());
+        if(x.getCarsIDs()!=null && !x.getCarsIDs().isEmpty()){
+            o.setCars(repo.findAllById(x.getCarsIDs()));
+        }
+        o.setCars(repo.findAllById(x.getCarsIDs()));
+        return o;
+    }
     
-    OwnerDTO toDTO(Owner o);
-    Owner toOwner(OwnerDTO x);
+    public OwnerDTO toDTO(Owner o){
+        var x = new OwnerDTO(o.getId(), o.getFirstName(), o.getLastName(), repo.findIdsByCars(o.getCars()));
+        if(o.getCars().isEmpty()){
+            x = new OwnerDTO(o.getId(), o.getFirstName(), o.getLastName(), new ArrayList<>());
+        }else if(o.getCars()==null){
+            x = new OwnerDTO(o.getId(), o.getFirstName(), o.getLastName(), null);
+        }
+        return x;
+    }
 }

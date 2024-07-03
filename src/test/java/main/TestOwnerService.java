@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import main.dto.OwnerDTO;
+import main.entity.Car;
 import main.entity.Owner;
 import main.mapper.OwnerMapper;
 import main.repo.CarRepo;
@@ -52,6 +53,7 @@ public class TestOwnerService {
         o.setId(1);
         o.setFirstName("youness");
         o.setLastName("Bourgui");
+        o.setCars(new ArrayList<>());
         
         x= new OwnerDTO(1,"youness", "Bourgui", new ArrayList<>());
     }

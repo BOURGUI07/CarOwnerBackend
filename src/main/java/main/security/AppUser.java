@@ -25,6 +25,22 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AppUser {
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
     public AppUser(String username, String password, String role) {
         this.username = username;
         this.password = password;

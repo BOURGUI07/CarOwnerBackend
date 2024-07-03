@@ -14,6 +14,44 @@ import lombok.Value;
  */
 @Value
 public class CarDTO {
+
+    public CarDTO(Integer id, String brand, String color, String registrationNumber, int modelYear, double price, Integer ownerID) {
+        this.id = id;
+        this.brand = brand;
+        this.color = color;
+        this.registrationNumber = registrationNumber;
+        this.modelYear = modelYear;
+        this.price = price;
+        this.ownerID = ownerID;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public int getModelYear() {
+        return modelYear;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public Integer getOwnerID() {
+        return ownerID;
+    }
     private Integer id;
     @NotBlank(message="Brand Name is Mandatory")
     @Size(min=2, max=50, message="Brand Name Must be At least 2 characters and doesn't exceed 50")

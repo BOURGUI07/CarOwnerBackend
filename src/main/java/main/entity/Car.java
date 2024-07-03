@@ -28,6 +28,62 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Car {
 
+    public Integer getId() {
+        return id;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getRegistrationNumber() {
+        return registrationNumber;
+    }
+
+    public int getModelYear() {
+        return modelYear;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public void setRegistrationNumber(String registrationNumber) {
+        this.registrationNumber = registrationNumber;
+    }
+
+    public void setModelYear(int modelYear) {
+        this.modelYear = modelYear;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
