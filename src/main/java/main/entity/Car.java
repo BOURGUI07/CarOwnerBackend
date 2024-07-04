@@ -16,6 +16,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import main.auditing.Auditable;
 
 /**
  *
@@ -26,7 +27,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Car {
+public class Car extends Auditable{
 
     public Integer getId() {
         return id;

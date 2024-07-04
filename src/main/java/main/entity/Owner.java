@@ -21,6 +21,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import main.auditing.Auditable;
 
 /**
  *
@@ -32,7 +33,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Owner {
+public class Owner extends Auditable{
     public Integer getId() {
         return id;
     }
