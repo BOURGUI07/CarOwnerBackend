@@ -77,6 +77,14 @@ public class OwnerController {
         return ResponseEntity.ok(service.getAll());
     }
     
+    @Operation(summary="Get Owners By some Criteria")
+    @GetMapping("/owners")
+    public ResponseEntity<List<OwnerDTO>> getOwnersBy(
+            @RequestParam(required=false) String firstName, 
+            @RequestParam (required=false) String lastName){
+        return ResponseEntity.ok(service.findByCriteria(firstName, lastName));
+    }
+    
     @GetMapping("/owners/{id}")
     @Operation(summary="Find Owner By Id", description="Return a Single Owner")
     @ApiResponses(value={

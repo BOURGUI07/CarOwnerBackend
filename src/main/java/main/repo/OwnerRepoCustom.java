@@ -4,15 +4,13 @@
  */
 package main.repo;
 
-import main.entity.Owner;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import main.dto.OwnerDTO;
 
 /**
  *
  * @author hp
  */
-@Repository
-public interface OwnerRepo extends JpaRepository<Owner,Integer>, OwnerRepoCustom {
-    
+public interface OwnerRepoCustom {
+    List<OwnerDTO> findByCriteria(String firstName, String lastName);
 }

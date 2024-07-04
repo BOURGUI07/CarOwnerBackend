@@ -45,11 +45,11 @@ public class Car extends Auditable{
         return registrationNumber;
     }
 
-    public int getModelYear() {
+    public Integer getModelYear() {
         return modelYear;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -73,11 +73,11 @@ public class Car extends Auditable{
         this.registrationNumber = registrationNumber;
     }
 
-    public void setModelYear(int modelYear) {
+    public void setModelYear(Integer modelYear) {
         this.modelYear = modelYear;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -96,9 +96,9 @@ public class Car extends Auditable{
     @Column(name="registration")
     private String registrationNumber;
     @Column(name="model_year")
-    private int modelYear;
+    private Integer modelYear;
     @Column(name="price")
-    private double price;
+    private Double price;
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="owner_id")
     private Owner owner;

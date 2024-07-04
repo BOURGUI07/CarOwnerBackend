@@ -4,6 +4,8 @@
  */
 package main.client;
 
+import java.util.List;
+import java.util.Optional;
 import main.dto.AveragePriceByOwner;
 import main.dto.MostExpensiveCarByOwner;
 import main.dto.OwnerDTO;
@@ -13,6 +15,7 @@ import main.dto.OwnersWithMoreCars;
 import main.dto.TotalValueOfOwnerCars;
 import main.entity.Owner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -81,6 +84,17 @@ public class OwnerClient {
     
     public Flux<OwnerDTO> ownersWithNoCars(){
         return this.webClient.get().uri("/withNoCar").retrieve().bodyToFlux(OwnerDTO.class);
+    }
+    
+    public Mono<List<OwnerDTO>> getProducts(String firstName, String lastName) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/owners")
+                        .queryParamIfPresent("firstName", Optional.ofNullable(firstName))
+                        .queryParamIfPresent("lastName", Optional.ofNullable(lastName))
+                        .build())
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<OwnerDTO>>() {});
     }
            
 }

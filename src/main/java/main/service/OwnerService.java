@@ -8,10 +8,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +28,7 @@ import main.entity.Owner;
 import main.mapper.OwnerMapper;
 import main.repo.CarRepo;
 import main.repo.OwnerRepo;
+import main.repo.OwnerRepoCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -36,7 +39,7 @@ import org.springframework.stereotype.Service;
  * @author hp
  */
 @Service
-public class OwnerService {
+public class OwnerService implements OwnerRepoCustom{
 
     public void setValidator(Validator validator) {
         this.validator = validator;
@@ -170,5 +173,28 @@ public class OwnerService {
     public List<OwnerDTO> ownersWithNoCars(){
         var q = "SELECT o.* FROM owner o LEFT JOIN car c ON(o.id=c.owner_id) WHERE c.id IS NULL";
         return (List<OwnerDTO>) em.createNativeQuery(q, Owner.class).getResultList().stream().map(x -> mapper.toDTO((Owner) x)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OwnerDTO> findByCriteria(String firstName, String lastName) {
+        var cb = em.getCriteriaBuilder(); //Criteria Builder
+        var cq = cb.createQuery(OwnerDTO.class); //Criteria Query
+        var owner = cq.from(Owner.class); // Root
+        List<Predicate> predicates = new ArrayList<>();
+        if(firstName!=null){
+            predicates.add(cb.like(owner.get("firstName"), "%" + firstName + "%"));
+        }
+        if(lastName!=null){
+            predicates.add(cb.like(owner.get("lastName"), "%" + lastName + "%"));
+        }
+  
+        cq.select(cb.construct(OwnerDTO.class,
+                owner.get("id"),
+                owner.get("firstName"),
+                owner.get("lastName"),
+                owner.get("carsIDs")))
+          .where(cb.and(predicates.toArray(new Predicate[0])));
+        
+        return em.createQuery(cq).getResultList();
     }
 }

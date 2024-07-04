@@ -4,9 +4,12 @@
  */
 package main.client;
 
+import java.util.List;
+import java.util.Optional;
 import main.dto.CarDTO;
 import main.dto.CountCarsByColor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -67,5 +70,20 @@ public class CarClient {
     
     public Flux<CountCarsByColor> countCarsEachColor(String brand){
         return this.client.get().uri("/countCarsEachColor", brand).retrieve().bodyToFlux(CountCarsByColor.class);
+    }
+    
+    public Mono<List<CarDTO>> getProducts(String brand, String color, Integer minYear, Integer maxYear, Double minPrice, Double maxPrice) {
+        return client.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/cars")
+                        .queryParamIfPresent("brand", Optional.ofNullable(brand))
+                        .queryParamIfPresent("color", Optional.ofNullable(color))
+                        .queryParamIfPresent("minYear", Optional.ofNullable(minYear))
+                        .queryParamIfPresent("maxYear", Optional.ofNullable(maxYear))
+                        .queryParamIfPresent("minPrice", Optional.ofNullable(minPrice))
+                        .queryParamIfPresent("maxPrice", Optional.ofNullable(maxPrice))
+                        .build())
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<CarDTO>>() {});
     }
 }

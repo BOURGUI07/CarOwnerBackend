@@ -15,7 +15,7 @@ import lombok.Value;
 @Value
 public class CarDTO {
 
-    public CarDTO(Integer id, String brand, String color, String registrationNumber, int modelYear, double price, Integer ownerID) {
+    public CarDTO(Integer id, String brand, String color, String registrationNumber, Integer modelYear, Double price, Integer ownerID) {
         this.id = id;
         this.brand = brand;
         this.color = color;
@@ -41,11 +41,11 @@ public class CarDTO {
         return registrationNumber;
     }
 
-    public int getModelYear() {
+    public Integer getModelYear() {
         return modelYear;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
@@ -58,7 +58,7 @@ public class CarDTO {
     private String brand;
     private String color;
     private String registrationNumber;
-    private int modelYear;
-    private double price;
+    private Integer modelYear;
+    private Double price;
     private Integer ownerID;
 }

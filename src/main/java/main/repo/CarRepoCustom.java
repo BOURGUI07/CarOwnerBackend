@@ -4,15 +4,13 @@
  */
 package main.repo;
 
-import main.entity.Owner;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import main.dto.CarDTO;
 
 /**
  *
  * @author hp
  */
-@Repository
-public interface OwnerRepo extends JpaRepository<Owner,Integer>, OwnerRepoCustom {
-    
+public interface CarRepoCustom {
+    List<CarDTO> findCarsByCriteria(String brand, String color, Integer minYear, Integer maxYear, Double minPrice, Double maxPrice);
 }

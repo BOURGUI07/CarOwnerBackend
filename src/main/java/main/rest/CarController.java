@@ -53,6 +53,19 @@ public class CarController {
         return ResponseEntity.ok(service.getAll());
     }
     
+    @Operation(summary="Get Cars By Some Criteria")
+    @GetMapping("/cars")
+    public ResponseEntity<List<CarDTO>> getCarBy(
+            @RequestParam String brand,
+            @RequestParam String color,
+            @RequestParam Integer minYear,
+            @RequestParam Integer maxYear,
+            @RequestParam Double minPrice,
+            @RequestParam Double maxPrice
+    ){
+        return ResponseEntity.ok(service.findCarsByCriteria(brand, color, minYear, maxYear, minPrice, maxPrice));
+    }
+    
     @Operation(summary="Find Car By Id", description="Return a Single Car")
     @ApiResponses(value={
         @ApiResponse(responseCode="200", description="Car Found Successfully"),
@@ -117,7 +130,7 @@ public class CarController {
     
     @Operation(summary="Find Cars By Model Year")
     @GetMapping("/cars/findByYear")
-    public List<CarDTO> findCarsByYear(@RequestParam int year){
+    public List<CarDTO> findCarsByYear(@RequestParam Integer year){
         return service.getCarsByYear(year);
     }
     

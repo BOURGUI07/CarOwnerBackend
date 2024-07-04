@@ -6,10 +6,12 @@ package main.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,6 +20,7 @@ import main.dto.CountCarsByColor;
 import main.entity.Car;
 import main.mapper.CarMapper;
 import main.repo.CarRepo;
+import main.repo.CarRepoCustom;
 import main.repo.OwnerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,7 +32,7 @@ import org.springframework.stereotype.Service;
  * @author hp
  */
 @Service
-public class CarService {
+public class CarService implements CarRepoCustom{
     @Autowired
     public CarService(CarRepo repo, OwnerRepo repo1, CarMapper mapper) {
         this.repo = repo;
@@ -109,13 +112,51 @@ public class CarService {
         clearCache();
     }
     
+    @Override
+    public List<CarDTO> findCarsByCriteria(String brand, String color, Integer minYear, Integer maxYear, Double minPrice, Double maxPrice){
+        var cb = em.getCriteriaBuilder(); //Criteria Builder
+        var cq = cb.createQuery(CarDTO.class); //Criteria Query
+        var car = cq.from(Car.class); // Root
+        List<Predicate> predicates = new ArrayList<>();
+        if(brand!=null){
+            predicates.add(cb.like(car.get("brand"), "%" + brand + "%"));
+        }
+        if(color!=null){
+            predicates.add(cb.like(car.get("color"), "%" + color + "%"));
+        }
+        if(minYear!=null){
+            predicates.add(cb.greaterThanOrEqualTo(car.get("modelYear"), minYear));
+        }
+        if(maxYear!=null){
+            predicates.add(cb.lessThanOrEqualTo(car.get("modelYear"), maxYear));
+        }
+        if(minPrice!=null){
+            predicates.add(cb.greaterThanOrEqualTo(car.get("modelYear"), minPrice));
+        }
+        if(maxPrice!=null){
+            predicates.add(cb.lessThanOrEqualTo(car.get("modelYear"), maxPrice));
+        }
+        cq.select(cb.construct(CarDTO.class,
+                car.get("id"),
+                car.get("brand"),
+                car.get("modelYear"),
+                car.get("color"),
+                car.get("registrationNumber"),
+                car.get("ownerID"),
+                car.get("price")))
+          .where(cb.and(predicates.toArray(new Predicate[0])));
+        
+        return em.createQuery(cq).getResultList();
+    }
+    
+    
     public List<CarDTO> getCarsByBrand(String brand){
         var q = "SELECT * FROM car WHERE brand= :brand";
         var results =  em.createNativeQuery(q, Car.class).setParameter("brand", brand).getResultList();
         return (List<CarDTO>) results.stream().map(x -> mapper.toDTO((Car) x)).collect(Collectors.toList());
     }
     
-    public List<CarDTO> getCarsByYear(int year){
+    public List<CarDTO> getCarsByYear(Integer year){
         var q = "SELECT * FROM car WHERE model_year= :x";
         var results= em.createNativeQuery(q, Car.class).setParameter("x", year).getResultList();
         return (List<CarDTO>) results.stream().map(x -> mapper.toDTO((Car) x)).collect(Collectors.toList());
