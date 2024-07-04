@@ -9,14 +9,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 import main.dto.CarDTO;
 import main.dto.CountCarsByColor;
 import main.entity.Car;
 import main.handler.RessourceNotFoundException;
 import main.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,12 +36,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api")
+@Validated
 public class CarController {
     @Autowired
-    public CarController(CarService service) {
+    public CarController(CarService service, MessageSource source) {
         this.service = service;
+        this.source = source;
     }
-    private CarService service;
+    private final CarService service;
+    private final MessageSource source;
     
     @Operation(summary="Get All Cars", description="Return a List of Cars")
     @ApiResponse(responseCode="200", description="Found All Cars Successfully")
@@ -52,9 +58,9 @@ public class CarController {
         @ApiResponse(responseCode="200", description="Car Found Successfully"),
         @ApiResponse(responseCode="404", description="Car Not Found")})
     @GetMapping("/cars/{id}")
-    public ResponseEntity<CarDTO> getCar(@PathVariable Integer id){
+    public ResponseEntity<CarDTO> getCar(@PathVariable Integer id, Locale locale){
         if(id<0){
-            throw new RessourceNotFoundException("No Car Found for id: " + id);
+            throw new RessourceNotFoundException(source.getMessage("error.car.notfound", new Object[]{id}, locale));
         }
         var car = service.findCar(id);
         if(car==null){
@@ -77,9 +83,9 @@ public class CarController {
         @ApiResponse(responseCode="404", description="Car Not Found")
     })
     @PutMapping("/cars/{id}")
-    public ResponseEntity<CarDTO> updateCar(@PathVariable Integer id,@Valid @RequestBody CarDTO x){
+    public ResponseEntity<CarDTO> updateCar(@PathVariable Integer id,@Valid @RequestBody CarDTO x, Locale locale){
         if(id<0){
-            throw new RessourceNotFoundException("No Car Found for id: " + id);
+            throw new RessourceNotFoundException(source.getMessage("error.car.notfound", new Object[]{id}, locale));
         }
         return ResponseEntity.ok(service.updateCar(id, x));
     }
@@ -89,9 +95,9 @@ public class CarController {
         @ApiResponse(responseCode="200", description="Car Deleted"),
         @ApiResponse(responseCode="404", description="Car Not Found")})
     @DeleteMapping("/cars/{id}")
-    public ResponseEntity<Void> deleteCar(@PathVariable Integer id){
+    public ResponseEntity<Void> deleteCar(@PathVariable Integer id, Locale locale){
         if(id<0){
-            throw new RessourceNotFoundException("No Car Found for id: " + id);
+            throw new RessourceNotFoundException(source.getMessage("error.car.notfound", new Object[]{id}, locale));
         }
         service.deleteCar(id);
         return ResponseEntity.noContent().build();

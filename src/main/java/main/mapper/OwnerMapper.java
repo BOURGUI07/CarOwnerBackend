@@ -25,7 +25,6 @@ public class OwnerMapper {
         if(x.getCarsIDs()!=null && !x.getCarsIDs().isEmpty()){
             o.setCars(repo.findAllById(x.getCarsIDs()));
         }
-        o.setCars(repo.findAllById(x.getCarsIDs()));
         return o;
     }
     

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 import main.dto.AveragePriceByOwner;
 import main.dto.MostExpensiveCarByOwner;
 import main.dto.OwnerDTO;
@@ -16,12 +17,13 @@ import main.dto.OwnersOfBrand;
 import main.dto.OwnersOfCarsLessThanYear;
 import main.dto.OwnersWithMoreCars;
 import main.dto.TotalValueOfOwnerCars;
-import main.entity.Owner;
 import main.handler.RessourceNotFoundException;
 import main.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,12 +40,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api")
+@Validated
 public class OwnerController {
     @Autowired
-    public OwnerController(OwnerService service) {
+    public OwnerController(OwnerService service, MessageSource source) {
         this.service = service;
+        this.source=source;
     }
-    private OwnerService service;
+    private final OwnerService service;
+    private final MessageSource source;
     
     @PostMapping("/owners")
     @Operation(summary= "Create a New Owner")
@@ -58,9 +63,9 @@ public class OwnerController {
         @ApiResponse(responseCode="404", description="Owner Not Found")
     })
     @PutMapping("/owners/{id}")
-    public ResponseEntity<OwnerDTO> updateOwner(@PathVariable Integer id,@Valid @RequestBody OwnerDTO x){
+    public ResponseEntity<OwnerDTO> updateOwner(@PathVariable Integer id,@Valid @RequestBody OwnerDTO x, Locale locale){
         if(id<0){
-            throw new RessourceNotFoundException("No Owner Found for id: " + id);
+            throw new RessourceNotFoundException(source.getMessage("error.owner.notfound", new Object[]{id}, locale));
         }
         return ResponseEntity.ok(service.updateOwner(id, x));
     }
@@ -77,9 +82,9 @@ public class OwnerController {
     @ApiResponses(value={
         @ApiResponse(responseCode="200", description="Owner Found Successfully"),
         @ApiResponse(responseCode="404", description="Owner Not Found")})
-    public ResponseEntity<OwnerDTO> getOwner(@PathVariable Integer id){
+    public ResponseEntity<OwnerDTO> getOwner(@PathVariable Integer id, Locale locale){
         if(id<0){
-            throw new RessourceNotFoundException("No Owner Found for id: " + id);
+            throw new RessourceNotFoundException(source.getMessage("error.owner.notfound", new Object[]{id}, locale));
         }
         var owner = service.findOwner(id);
         if(owner==null){
@@ -94,9 +99,9 @@ public class OwnerController {
         @ApiResponse(responseCode="200", description="Owner Deleted"),
         @ApiResponse(responseCode="404", description="Owner Not Found")})
     @DeleteMapping("/owners/{id}")
-    public ResponseEntity<Void> deleteOwner(@PathVariable Integer id){
+    public ResponseEntity<Void> deleteOwner(@PathVariable Integer id, Locale locale){
         if(id<0){
-            throw new RessourceNotFoundException("No Owner Found for id: " + id);
+            throw new RessourceNotFoundException(source.getMessage("error.owner.notfound", new Object[]{id}, locale));
         }
         service.deleteOwner(id);
         return ResponseEntity.noContent().build();
