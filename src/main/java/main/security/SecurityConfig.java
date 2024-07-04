@@ -24,7 +24,7 @@ import org.springframework.security.web.SecurityFilterChain;
  */
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig{
     @Autowired
     public SecurityConfig(UserDetailsServiceImpl service) {
         this.service = service;
@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/cars").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/cars/**").hasAnyRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/cars/**").hasAnyRole("ADMIN")
+                .requestMatchers("/actuator/**").hasRole("ADMIN")
         );
         
         http.httpBasic(Customizer.withDefaults());
