@@ -11,31 +11,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import main.dto.OwnerDTO;
-import main.entity.Car;
 import main.entity.Owner;
 import main.mapper.OwnerMapper;
 import main.repo.CarRepo;
 import main.repo.OwnerRepo;
 import main.service.OwnerService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  *
  * @author hp
  */
+@ExtendWith(MockitoExtension.class)
+
 public class TestOwnerService {
     @Mock
     private OwnerMapper mapper;
